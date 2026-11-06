@@ -34,7 +34,6 @@ Everything comes from your own PC install of *The Elder Scrolls V: Skyrim* (2011
 
 | For building on PC | For playing on Android
 | :------------------ | -------------------:
-| TESV_unpacked.exe | TESV_unpacked.exe
 | TESV.exe | TESV.exe
 | d3dx9_42.dll (32-bit) | d3dx9_42.dll (32-bit)
 | binkw32.dll | binkw32.dll
@@ -46,8 +45,6 @@ Everything comes from your own PC install of *The Elder Scrolls V: Skyrim* (2011
 #### Which executable?
 
 - `TESV.exe` 1.9.32.0.8 (the final Steam patch), SHA-1 starts with `f39aeceb`.
-- Remove its SteamStub DRM with [Steamless](https://github.com/atom0s/Steamless) and name the result `TESV_unpacked.exe`. Its SHA-1 starts with `fed96638`.
-- Check yours with `certutil -hashfile TESV_unpacked.exe SHA1` (Windows) or `sha1sum TESV_unpacked.exe`.
 - Other releases (retail disc, older patches, Special Edition) have different code and are untested. Discovery and lifting should work on them, but the hooks in `runtime/skyrim_shims.c` use fixed addresses that won't match. Special Edition is 64-bit DirectX 11 and won't work at all.
 - DLC and mods are untested. `Update.esm` is fine.
 
