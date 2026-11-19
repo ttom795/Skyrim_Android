@@ -8,7 +8,7 @@ Discord: http://discord.gg/df3cK2JCqs
 
 Youtube link below:
 
-[![Watch the video](https://img.youtube.com/vi/FxGzgauZbgU/hqdefault.jpg)](https://www.youtube.com/watch?v=FxGzgauZbgU)
+[![Watch the video](https://img.youtube.com/vi/M5gTHARBuxI/hqdefault.jpg)](https://www.youtube.com/watch?v=M5gTHARBuxI)
 
 ## Functionality
 - **Static recompilation.** This project is *not* a decompilation but a recompilation; Basically, it's just converting one type of code to another rather than re-creating the original source. `TESV.exe`, `d3dx9_42.dll`, `binkw32.dll` and `X3DAudio1_7.dll` are all recompiled.
@@ -35,6 +35,7 @@ Everything comes from your own PC install of *The Elder Scrolls V: Skyrim* (2011
 | For building on PC | For playing on Android
 | :------------------ | -------------------:
 | TESV.exe | TESV.exe
+| TESV_Unpacked.exe |
 | d3dx9_42.dll (32-bit) | d3dx9_42.dll (32-bit)
 | binkw32.dll | binkw32.dll
 | X3DAudio1_7.dll (32-bit) | X3DAudio1_7.dll (32-bit)
