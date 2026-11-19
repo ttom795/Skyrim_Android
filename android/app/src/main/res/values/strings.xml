@@ -1,3 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="language">Language</string>
+    <string name="game_folder">Game folder</string>
+    <string name="choose_skyrim_folder">Choose Skyrim folder</string>
+    <string name="options">Options</string>
+    <string name="detail">Detail</string>
+    <string name="aspect_ratio">Aspect ratio</string>
+    <string name="resolution">Resolution</string>
+    <string name="resolution_format">%1$d × %2$d</string>
+    <string name="antialiasing">Antialiasing</string>
+    <string name="anisotropic_filtering">Anisotropic filtering</string>
+    <string name="texture_quality">Texture quality</string>
+    <string name="shadow_detail">Shadow detail</string>
+    <string name="decal_quantity">Decal quantity</string>
+    <string name="radial_blur_quality">Radial blur quality</string>
+    <string name="object_fade_distance">Object fade distance</string>
+    <string name="fxaa">FXAA</string>
+    <string name="vertical_sync">Vertical sync</string>
+    <string name="touch_controls">Touch controls</string>
+    <string name="nintendo_button_layout">Nintendo button layout (A/B, X/Y swapped)</string>
+    <string name="play">Play</string>
+    <string name="invalid_folder_location">That location is not a plain folder on this device; choose one on internal storage or the SD card.</string>
+    <string name="unreadable_prefix">cannot read</string>
+    <string name="cannot_read_file">cannot read %1$s</string>
+    <string name="wrong_version">%1$s is the wrong version (SHA-1 %2$s, expected %3$s)</string>
+    <string name="no_folder_chosen">no folder chosen</string>
+    <string name="folder_not_found">folder not found</string>
+    <string name="data_folder_missing">Data folder missing</string>
+    <string name="skyrim_esm_missing">Data/Skyrim.esm missing</string>
+    <string name="cannot_read_data_folder">cannot read the Data folder</string>
+    <string name="cannot_read_skyrim_esm">cannot read Data/Skyrim.esm</string>
+    <string name="game_executable_missing">TESV.exe missing</string>
+    <string name="file_missing">%1$s missing</string>
+    <string name="no_folder_instructions">No folder chosen yet. Copy your Skyrim folder (with the 3 extra files) anywhere outside Android/data, e.g. Internal storage/Skyrim, then choose it here.</string>
+    <string name="ready">Ready</string>
+    <string name="not_ready">Not ready: %1$s</string>
+    <string name="settings_write_failed">Could not write the settings: %1$s</string>
+
+    <string-array name="language_names">
+        <item>English</item>
+        <item>Português (Brasil)</item>
+    </string-array>
+    <string-array name="detail_presets">
+        <item>Low</item><item>Medium</item><item>High</item><item>Ultra</item>
+    </string-array>
+    <string-array name="aspect_ratios">
+        <item>16:9</item><item>16:10</item><item>4:3</item><item>21:9</item><item>Screen</item>
+    </string-array>
+    <string-array name="antialiasing">
+        <item>Off</item><item>2x</item><item>4x</item><item>8x</item>
+    </string-array>
+    <string-array name="anisotropic_filtering">
+        <item>Off</item><item>2x</item><item>4x</item><item>8x</item><item>16x</item>
+    </string-array>
+    <string-array name="texture_quality">
+        <item>Low</item><item>Medium</item><item>High</item>
+    </string-array>
+    <string-array name="shadow_detail">
+        <item>Low</item><item>Medium</item><item>High</item><item>Ultra</item>
+    </string-array>
+    <string-array name="decal_quantity">
+        <item>None</item><item>Low</item><item>Medium</item><item>High</item>
+    </string-array>
+    <string-array name="radial_blur_quality">
+        <item>Low</item><item>Medium</item><item>High</item>
+    </string-array>
+    <string-array name="object_fade_distance">
+        <item>Short</item><item>Medium</item><item>Far</item><item>Very far</item>
+    </string-array>
 </resources>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Idioma</string>
+    <string name="game_folder">Pasta do jogo</string>
+    <string name="choose_skyrim_folder">Escolher pasta do Skyrim</string>
+    <string name="options">Opções</string>
+    <string name="detail">Detalhes gráficos</string>
+    <string name="aspect_ratio">Proporção da tela</string>
+    <string name="resolution">Resolução</string>
+    <string name="resolution_format">%1$d × %2$d</string>
+    <string name="antialiasing">Antisserrilhamento</string>
+    <string name="anisotropic_filtering">Filtragem anisotrópica</string>
+    <string name="texture_quality">Qualidade das texturas</string>
+    <string name="shadow_detail">Detalhe das sombras</string>
+    <string name="decal_quantity">Quantidade de marcas</string>
+    <string name="radial_blur_quality">Qualidade do desfoque radial</string>
+    <string name="object_fade_distance">Distância de exibição dos objetos</string>
+    <string name="fxaa">FXAA</string>
+    <string name="vertical_sync">Sincronização vertical</string>
+    <string name="touch_controls">Controles na tela</string>
+    <string name="nintendo_button_layout">Layout Nintendo (troca A/B e X/Y)</string>
+    <string name="play">Jogar</string>
+    <string name="invalid_folder_location">Este local não é uma pasta acessível no aparelho. Escolha uma pasta no armazenamento interno ou no cartão SD.</string>
+    <string name="unreadable_prefix">Não foi possível ler</string>
+    <string name="cannot_read_file">Não foi possível ler %1$s</string>
+    <string name="wrong_version">%1$s é de uma versão incompatível (SHA-1 %2$s; esperado %3$s)</string>
+    <string name="no_folder_chosen">nenhuma pasta foi escolhida</string>
+    <string name="folder_not_found">pasta não encontrada</string>
+    <string name="data_folder_missing">pasta Data ausente</string>
+    <string name="skyrim_esm_missing">arquivo Data/Skyrim.esm ausente</string>
+    <string name="cannot_read_data_folder">Não foi possível ler a pasta Data</string>
+    <string name="cannot_read_skyrim_esm">Não foi possível ler Data/Skyrim.esm</string>
+    <string name="game_executable_missing">TESV.exe ausente</string>
+    <string name="file_missing">arquivo %1$s ausente</string>
+    <string name="no_folder_instructions">Nenhuma pasta foi escolhida. Copie a pasta do Skyrim (com os 3 arquivos adicionais) para um local fora de Android/data, por exemplo Armazenamento interno/Skyrim, e escolha essa pasta.</string>
+    <string name="ready">Pronto</string>
+    <string name="not_ready">Ainda não está pronto: %1$s</string>
+    <string name="settings_write_failed">Não foi possível salvar as configurações: %1$s</string>
+
+    <string-array name="language_names">
+        <item>English</item>
+        <item>Português (Brasil)</item>
+    </string-array>
+    <string-array name="detail_presets">
+        <item>Baixo</item><item>Médio</item><item>Alto</item><item>Ultra</item>
+    </string-array>
+    <string-array name="aspect_ratios">
+        <item>16:9</item><item>16:10</item><item>4:3</item><item>21:9</item><item>Tela</item>
+    </string-array>
+    <string-array name="antialiasing">
+        <item>Desligado</item><item>2x</item><item>4x</item><item>8x</item>
+    </string-array>
+    <string-array name="anisotropic_filtering">
+        <item>Desligada</item><item>2x</item><item>4x</item><item>8x</item><item>16x</item>
+    </string-array>
+    <string-array name="texture_quality">
+        <item>Baixa</item><item>Média</item><item>Alta</item>
+    </string-array>
+    <string-array name="shadow_detail">
+        <item>Baixo</item><item>Médio</item><item>Alto</item><item>Ultra</item>
+    </string-array>
+    <string-array name="decal_quantity">
+        <item>Nenhuma</item><item>Baixa</item><item>Média</item><item>Alta</item>
+    </string-array>
+    <string-array name="radial_blur_quality">
+        <item>Baixa</item><item>Média</item><item>Alta</item>
+    </string-array>
+    <string-array name="object_fade_distance">
+        <item>Curta</item><item>Média</item><item>Longa</item><item>Muito longa</item>
+    </string-array>
+</resources>
