@@ -1,5 +1,7 @@
 # The Elder Scrolls V: Skyrim (PC, 2011) for Android
 
+Leia a documentação em português do Brasil: [README.pt-BR.md](README.pt-BR.md).
+
 An unofficial "native" Android port of the original 2011 PC version of *The Elder Scrolls V: Skyrim* (not Special Edition). It should run on any arm64 phone with Vulkan 1.1 and is tested on a Snapdragon device with an Adreno 610 GPU (Retroid Pocket Duo Lite, if anyone is curious).
 
 This repository contains no game code or data. You need your own copy of the PC game, which is used as a basis for the recompilation. Personally, I used the Steam version.
@@ -23,6 +25,7 @@ Youtube link below:
 ## Port settings
 ![Launcher](images/launcher.png)
 The app opens on a launcher before the game starts:
+- **Language**: choose English or Brazilian Portuguese for the launcher.
 - **Choose Skyrim folder**: where your game files are (see 3. Installing).
 - **Detail**: Low, Medium, High or Ultra, like the PC launcher. Low is the default and is what an Adreno 610 can manage.
 - **Resolution**: the screen's own resolution, or a lower one (down to 108p) that is stretched to fill the screen.
