@@ -1,10 +1,12 @@
 package com.tj.skyrim;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 /* Start screen, in the spirit of the PC SkyrimLauncher: pick the folder that
  * holds the Skyrim install, set the graphics options, press Play. The options
@@ -52,13 +55,11 @@ public class LauncherActivity extends Activity {
     private final Map<String, CheckBox> checks = new LinkedHashMap<>();
 
     /* option key -> labels, and the INI values each label stands for */
-    private static final String[] PRESETS = {"Low", "Medium", "High", "Ultra"};
     private static final String[] PRESET_FILES = {"low.ini", "medium.ini", "high.ini", "VeryHigh.ini"};
     private static final int[] MODE_HEIGHTS = {1080, 900, 720, 648, 576, 540, 480, 432, 360, 288, 270, 216, 180, 144, 108};
 
     // Aspect ratio of the picture. Very wide phones (20:9 and up) show the game
     // at 16:9 or so with black bars instead of stretching its UI to the edges.
-    private static final String[] ASPECTS = {"16:9", "16:10", "4:3", "21:9", "Screen"};
     private static final int[][] ASPECT_V = {{16, 9}, {16, 10}, {4, 3}, {21, 9}, {0, 0}};
 
     private int[] screen() {
@@ -82,9 +83,10 @@ public class LauncherActivity extends Activity {
         return l.toArray(new int[0][]);
     }
 
-    private static String[] modeNames(int[][] m) {
+    private String[] modeNames(int[][] m) {
         String[] r = new String[m.length];
-        for (int i = 0; i < m.length; i++) r[i] = m[i][0] + " x " + m[i][1];
+        for (int i = 0; i < m.length; i++)
+            r[i] = String.format(Locale.getDefault(), getString(R.string.resolution_format), m[i][0], m[i][1]);
         return r;
     }
 
@@ -92,19 +94,26 @@ public class LauncherActivity extends Activity {
         for (int i = 0; i < m.length; i++) if (m[i][1] <= 540) return i;
         return m.length - 1;
     }
-    private static final String[] AA = {"Off", "2x", "4x", "8x"};
     private static final int[] AA_V = {1, 2, 4, 8};
-    private static final String[] ANISO = {"Off", "2x", "4x", "8x", "16x"};
     private static final int[] ANISO_V = {1, 2, 4, 8, 16};
-    private static final String[] TEXQ = {"Low", "Medium", "High"};
     private static final int[] TEXQ_V = {2, 1, 0};  // iTexMipMapSkip
-    private static final String[] SHADOW = {"Low", "Medium", "High", "Ultra"};
     private static final int[] SHADOW_V = {512, 1024, 2048, 4096};
-    private static final String[] DECALS = {"None", "Low", "Medium", "High"};
     private static final int[] DECALS_V = {0, 100, 250, 1000};
-    private static final String[] BLUR = {"Low", "Medium", "High"};
-    private static final String[] FADE = {"Short", "Medium", "Far", "Very far"};
     private static final String[] FADE_V = {"2.5", "4.5", "6.5", "9.0"};
+
+    private static String defaultLanguage(Context context) {
+        Locale system = context.getResources().getConfiguration().getLocales().get(0);
+        return "pt".equalsIgnoreCase(system.getLanguage()) ? "pt-BR" : "en";
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        SharedPreferences languagePrefs = newBase.getSharedPreferences("launcher", Context.MODE_PRIVATE);
+        String tag = languagePrefs.getString("language", defaultLanguage(newBase));
+        Configuration config = new Configuration(newBase.getResources().getConfiguration());
+        config.setLocale(Locale.forLanguageTag(tag));
+        super.attachBaseContext(newBase.createConfigurationContext(config));
+    }
 
     @Override
     protected void onCreate(Bundle b) {
@@ -174,13 +183,37 @@ public class LauncherActivity extends Activity {
         root.setPadding(dp(24), dp(16), dp(24), dp(24));
         sv.addView(root);
 
+        text(root, getString(R.string.language), 16, true);
+        Spinner language = new Spinner(this);
+        String[] languageNames = getResources().getStringArray(R.array.language_names);
+        ArrayAdapter<String> languageAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, languageNames);
+        languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        language.setAdapter(languageAdapter);
+        String selectedLanguage = prefs.getString("language", defaultLanguage(this));
+        language.setSelection("pt-BR".equalsIgnoreCase(selectedLanguage) ? 1 : 0);
+        root.addView(language, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        language.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean first = true;
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (first) { first = false; return; }
+                String next = position == 1 ? "pt-BR" : "en";
+                if (!next.equalsIgnoreCase(prefs.getString("language", defaultLanguage(LauncherActivity.this)))) {
+                    prefs.edit().putString("language", next).apply();
+                    recreate();
+                }
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
         text(root, "Skyrim", 28, true);
 
-        text(root, "Game folder", 20, true);
+        text(root, getString(R.string.game_folder), 20, true);
         folderText = text(root, "", 14, false);
         folderStatus = text(root, "", 14, false);
         Button pick = new Button(this);
-        pick.setText("Choose Skyrim folder");
+        pick.setText(R.string.choose_skyrim_folder);
         pick.setOnClickListener(v -> {
             /* the game reads the folder with plain file calls: ask for file
              * access first (only shown once), then pick */
@@ -189,11 +222,13 @@ public class LauncherActivity extends Activity {
         });
         root.addView(pick);
 
-        text(root, "Options", 20, true);
-        Spinner preset = spinner(root, "preset", "Detail", PRESETS, 0);
-        Spinner aspect = spinner(root, "aspect", "Aspect ratio", ASPECTS, 0);
+        text(root, getString(R.string.options), 20, true);
+        Spinner preset = spinner(root, "preset", getString(R.string.detail),
+                getResources().getStringArray(R.array.detail_presets), 0);
+        Spinner aspect = spinner(root, "aspect", getString(R.string.aspect_ratio),
+                getResources().getStringArray(R.array.aspect_ratios), 0);
         int[][] m = modes(aspect.getSelectedItemPosition());
-        Spinner res = spinner(root, "res", "Resolution", modeNames(m), defaultMode(m));
+        Spinner res = spinner(root, "res", getString(R.string.resolution), modeNames(m), defaultMode(m));
         aspect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             boolean first = true;
             @Override public void onItemSelected(AdapterView<?> p, View v, int pos, long id) {
@@ -213,17 +248,17 @@ public class LauncherActivity extends Activity {
             @Override public void onNothingSelected(AdapterView<?> p) {}
         });
         prefs.edit().putInt("aspectShown", aspect.getSelectedItemPosition()).apply();
-        spinner(root, "aa", "Antialiasing", AA, 0);
-        spinner(root, "aniso", "Anisotropic filtering", ANISO, 0);
-        spinner(root, "texq", "Texture quality", TEXQ, 1);
-        spinner(root, "shadow", "Shadow detail", SHADOW, 0);
-        spinner(root, "decals", "Decal quantity", DECALS, 0);
-        spinner(root, "blur", "Radial blur quality", BLUR, 0);
-        spinner(root, "fade", "Object fade distance", FADE, 0);
-        check(root, "fxaa", "FXAA", false);
-        check(root, "vsync", "Vertical sync", true);
-        check(root, "touch", "Touch controls", true);
-        check(root, "nintendo", "Nintendo button layout (A/B, X/Y swapped)", false);
+        spinner(root, "aa", getString(R.string.antialiasing), getResources().getStringArray(R.array.antialiasing), 0);
+        spinner(root, "aniso", getString(R.string.anisotropic_filtering), getResources().getStringArray(R.array.anisotropic_filtering), 0);
+        spinner(root, "texq", getString(R.string.texture_quality), getResources().getStringArray(R.array.texture_quality), 1);
+        spinner(root, "shadow", getString(R.string.shadow_detail), getResources().getStringArray(R.array.shadow_detail), 0);
+        spinner(root, "decals", getString(R.string.decal_quantity), getResources().getStringArray(R.array.decal_quantity), 0);
+        spinner(root, "blur", getString(R.string.radial_blur_quality), getResources().getStringArray(R.array.radial_blur_quality), 0);
+        spinner(root, "fade", getString(R.string.object_fade_distance), getResources().getStringArray(R.array.object_fade_distance), 0);
+        check(root, "fxaa", getString(R.string.fxaa), false);
+        check(root, "vsync", getString(R.string.vertical_sync), true);
+        check(root, "touch", getString(R.string.touch_controls), true);
+        check(root, "nintendo", getString(R.string.nintendo_button_layout), false);
         preset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             boolean first = true;
             @Override public void onItemSelected(AdapterView<?> p, View v, int pos, long id) {
@@ -234,7 +269,7 @@ public class LauncherActivity extends Activity {
         });
 
         playButton = new Button(this);
-        playButton.setText("Play");
+        playButton.setText(R.string.play);
         playButton.setTextSize(22);
         playButton.setOnClickListener(v -> play());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(64));
@@ -286,7 +321,8 @@ public class LauncherActivity extends Activity {
 
     /* folder exists but its files can't be read: legacy storage was refused */
     private boolean unreadable(List<String> bad) {
-        for (String b : bad) if (b.startsWith("cannot read")) return true;
+        String prefix = getString(R.string.unreadable_prefix);
+        for (String b : bad) if (b.startsWith(prefix)) return true;
         return false;
     }
 
@@ -314,7 +350,7 @@ public class LauncherActivity extends Activity {
         if (req != REQ_FOLDER || res != RESULT_OK || data == null || data.getData() == null) return;
         String path = treeToPath(data.getData());
         if (path == null) {
-            folderStatus.setText("That location is not a plain folder on this device; choose one on internal storage or the SD card.");
+            folderStatus.setText(R.string.invalid_folder_location);
             return;
         }
         prefs.edit().putString("folder", path).apply();
@@ -351,9 +387,9 @@ public class LauncherActivity extends Activity {
 
     private void checkSha(File f, String want, String name, List<String> bad) {
         String got = sha1(f);
-        if (got == null) bad.add("cannot read " + name);
-        else if (!got.equals(want)) bad.add(name + " is the wrong version (SHA-1 " + got.substring(0, 8)
-                + ", expected " + want.substring(0, 8) + ")");
+        if (got == null) bad.add(getString(R.string.cannot_read_file, name));
+        else if (!got.equals(want)) bad.add(getString(R.string.wrong_version, name,
+                got.substring(0, 8), want.substring(0, 8)));
     }
 
     /* SHA-1 as hex, cached by path, size and modification time; null if unreadable. */
@@ -378,30 +414,30 @@ public class LauncherActivity extends Activity {
     /* Returns the list of problems with the folder (empty when it is ready). */
     private List<String> checkFolder(String path) {
         List<String> bad = new ArrayList<>();
-        if (path == null) { bad.add("no folder chosen"); return bad; }
+        if (path == null) { bad.add(getString(R.string.no_folder_chosen)); return bad; }
         File d = new File(path);
-        if (!d.isDirectory()) { bad.add("folder not found"); return bad; }
+        if (!d.isDirectory()) { bad.add(getString(R.string.folder_not_found)); return bad; }
         File data = findCi(d, "Data");
         File esm = data != null ? findCi(data, "Skyrim.esm") : null;
-        if (data == null) bad.add("Data folder missing");
-        else if (esm == null) bad.add(data.canRead() ? "Data/Skyrim.esm missing" : "cannot read the Data folder");
-        else if (!esm.canRead()) bad.add("cannot read Data/Skyrim.esm");
+        if (data == null) bad.add(getString(R.string.data_folder_missing));
+        else if (esm == null) bad.add(data.canRead() ? getString(R.string.skyrim_esm_missing)
+                : getString(R.string.cannot_read_data_folder));
+        else if (!esm.canRead()) bad.add(getString(R.string.cannot_read_skyrim_esm));
         // Only the original exe is checked: Steamless output differs between Steamless versions.
         File packed = findCi(d, "TESV.exe");
-        if (packed != null) checkSha(packed, SHA_TESV_STEAM, "TESV.exe", bad);
-        if (findCi(d, "TESV_unpacked.exe") == null && findCi(d, "TESV.exe.unpacked.exe") == null)
-            bad.add(packed != null ? "TESV_unpacked.exe missing (unpack TESV.exe with Steamless)" : "TESV_unpacked.exe missing");
+        if (packed == null) bad.add(getString(R.string.game_executable_missing));
+        else checkSha(packed, SHA_TESV_STEAM, "TESV.exe", bad);
         for (String n : new String[] {"d3dx9_42.dll", "X3DAudio1_7.dll", "binkw32.dll"})
-            if (findCi(d, n) == null) bad.add(n + " missing");
+            if (findCi(d, n) == null) bad.add(getString(R.string.file_missing, n));
         return bad;
     }
 
     private void refreshFolder() {
         String path = prefs.getString("folder", null);
-        folderText.setText(path == null ? "No folder chosen yet. Copy your Skyrim folder (with the 3 extra files) "
-                + "anywhere outside Android/data, e.g. Internal storage/Skyrim, then choose it here." : path);
+        folderText.setText(path == null ? getString(R.string.no_folder_instructions) : path);
         List<String> bad = checkFolder(path);
-        folderStatus.setText(bad.isEmpty() ? "Ready" : "Not ready: " + String.join(", ", bad));
+        folderStatus.setText(bad.isEmpty() ? getString(R.string.ready)
+                : getString(R.string.not_ready, String.join(", ", bad)));
         folderStatus.setTextColor(bad.isEmpty() ? Color.rgb(140, 200, 120) : Color.rgb(230, 150, 110));
         playButton.setEnabled(bad.isEmpty());
     }
@@ -433,7 +469,7 @@ public class LauncherActivity extends Activity {
                 w.write((checks.get("touch").isChecked() ? "1" : "0") + " " + (checks.get("nintendo").isChecked() ? "1" : "0") + "\n");
             }
         } catch (Exception ex) {
-            folderStatus.setText("Could not write the settings: " + ex);
+            folderStatus.setText(getString(R.string.settings_write_failed, ex.toString()));
             return;
         }
         Intent i = new Intent(this, SkyrimActivity.class);
